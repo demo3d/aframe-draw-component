@@ -21,10 +21,10 @@ module.exports.component = {
 	},
 
 	update: function (oldData) {
-		if (!oldData) this.createCanvas(this.data.width, this.data.height);
+		if (!oldData) this.createCanvas(this.data.width, this.data.height, this.data.background);
 	},
 
-	createCanvas: function (w, h) {
+	createCanvas: function (w, h, background) {
 		var _ = this;
 		var canvas = document.createElement("canvas");
 		canvas.width = w;
@@ -33,13 +33,17 @@ module.exports.component = {
 		_.canvas = canvas;
 		_.ctx = canvas.getContext("2d");
 
+		var newMaterial = new THREE.MeshBasicMaterial({
+			transparent: background === 'transparent'
+		});
+
 		this.texture = new THREE.Texture(_.canvas); //renders straight from a canvas
 		if(this.el.object3D.children.length > 0) { //backwards compatibility
-			this.el.object3D.children[0].material = new THREE.MeshBasicMaterial();
+			this.el.object3D.children[0].material = newMaterial;
 			this.el.object3D.children[0].material.map = this.texture;
 		}
 		else { //backwards compatibility
-			this.el.object3D.material = new THREE.MeshBasicMaterial();
+			this.el.object3D.material = newMaterial;
 			this.el.object3D.material.map = this.texture;
 		}
 		if(!this.el.hasLoaded) this.el.addEventListener("loaded", function() {
@@ -51,8 +55,11 @@ module.exports.component = {
 	render: function() {
 		if(this.registers.length > 0) { //backwards compatibility
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			this.ctx.fillStyle = this.data.background;
-			this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+			var background = this.data.background;
+			if(background!='transparent'){
+				this.ctx.fillStyle = this.data.background;
+				this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+			}
 			this.registers.forEach(function(item) {
 				item();
 			});
