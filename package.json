@@ -1,6 +1,6 @@
 {
   "name": "aframe-draw-component",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "HTML5 canvas component for A-Frame VR.",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maxkrieger/aframe-draw-component.git"
+    "url": "git+https://github.com/GoreStarry/aframe-draw-component.git"
   },
   "keywords": [
     "aframe",

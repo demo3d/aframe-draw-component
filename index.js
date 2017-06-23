@@ -7,7 +7,7 @@ module.exports.component = {
 			default: 256
 		},
 		background: {
-			default: "#FFFFFF"
+			default: ""
 		},
 	    reverse: {
 			default: false
@@ -24,10 +24,10 @@ module.exports.component = {
 	},
 
 	update: function (oldData) {
-		if (!oldData) this.createCanvas(this.data.width, this.data.height);
+		if (!oldData) this.createCanvas(this.data.width, this.data.height, this.data.background);
 	},
 
-	createCanvas: function (w, h) {
+	createCanvas: function (w, h, background) {
 		var _ = this;
 		var canvas = document.createElement("canvas");
 		canvas.width = w;
@@ -36,6 +36,7 @@ module.exports.component = {
 		_.canvas = canvas;
 		_.ctx = canvas.getContext("2d");
 
+// <<<<<<< HEAD
 		if (this.data.reverse) {
 	      _.ctx.translate(w, 0);
 	      _.ctx.scale(-1, 1);
@@ -43,12 +44,11 @@ module.exports.component = {
 
 		this.texture = new THREE.Texture(_.canvas); //renders straight from a canvas
 		if(this.el.object3D.children.length > 0) { //backwards compatibility
-			this.el.object3D.children[0].material = new THREE.MeshBasicMaterial();
+			this.el.object3D.children[0].material = new THREE.MeshBasicMaterial({ transparent: background === 'transparent' });
       		this.el.object3D.children[0].material.side = THREE.DoubleSide;
 			this.el.object3D.children[0].material.map = this.texture;
-		}
-		else { //backwards compatibility
-			this.el.object3D.material = new THREE.MeshBasicMaterial();
+		} else { //backwards compatibility
+			this.el.object3D.material = new THREE.MeshBasicMaterial({ transparent: background === 'transparent' });
       		this.el.object3D.material.side = THREE.DoubleSide;
 			this.el.object3D.material.map = this.texture;
 		}
@@ -61,8 +61,11 @@ module.exports.component = {
 	render: function() {
 		if(this.registers.length > 0) { //backwards compatibility
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			this.ctx.fillStyle = this.data.background;
-			this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+			var background = this.data.background;
+			if(background!='transparent'){
+				this.ctx.fillStyle = this.data.background;
+				this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+			}
 			this.registers.forEach(function(item) {
 				item();
 			});
