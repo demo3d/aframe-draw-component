@@ -7,7 +7,7 @@ module.exports.component = {
 			default: 256
 		},
 		background: {
-			default: ""
+			default: "transparent"
 		},
 	    reverse: {
 			default: false
